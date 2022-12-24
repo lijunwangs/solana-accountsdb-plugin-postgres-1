@@ -38,7 +38,7 @@ pub struct DbCompiledInstruction {
 }
 
 #[derive(Clone, Debug, FromSql, ToSql)]
-#[postgres(name = "InnerInstructions")]
+#[postgres(name = "InnerInstruction")]
 pub struct DbInnerInstruction {
     pub instruction: DbCompiledInstruction,
     pub stack_height: Option<i32>,
@@ -366,7 +366,7 @@ pub enum DbTransactionErrorCode {
     DuplicateInstruction,
     InsufficientFundsForRent,
     MaxLoadedAccountsDataSizeExceeded,
-    InvalidLoadedAccountsDataSizeLimit,
+    InvalidLoadedAccountsDataSizeLimit
 }
 
 impl From<&TransactionError> for DbTransactionErrorCode {

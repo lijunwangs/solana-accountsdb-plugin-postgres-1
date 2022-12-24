@@ -25,4 +25,5 @@ DROP TYPE "RewardType" CASCADE;
 DROP TYPE "Reward" CASCADE;
 DROP TYPE "TransactionTokenBalance" CASCADE;
 DROP TYPE "InnerInstructions" CASCADE;
+DROP TYPE "InnerInstruction" CASCADE;
 DROP TYPE "CompiledInstruction" CASCADE;

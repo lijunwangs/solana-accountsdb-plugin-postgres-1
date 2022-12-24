@@ -64,7 +64,9 @@ Create TYPE "TransactionErrorCode" AS ENUM (
     'WouldExceedAccountDataBlockLimit',
     'WouldExceedAccountDataTotalLimit',
     'DuplicateInstruction',
-    'InsufficientFundsForRent'
+    'InsufficientFundsForRent',
+    'MaxLoadedAccountsDataSizeExceeded',
+    'InvalidLoadedAccountsDataSizeLimit'
 );
 
 CREATE TYPE "TransactionError" AS (
@@ -78,9 +80,14 @@ CREATE TYPE "CompiledInstruction" AS (
     data BYTEA
 );
 
+CREATE TYPE "InnerInstruction" AS (
+    instruction "CompiledInstruction",
+    stack_height INT
+);
+
 CREATE TYPE "InnerInstructions" AS (
     index SMALLINT,
-    instructions "CompiledInstruction"[]
+    instructions "InnerInstruction"[]
 );
 
 CREATE TYPE "TransactionTokenBalance" AS (
