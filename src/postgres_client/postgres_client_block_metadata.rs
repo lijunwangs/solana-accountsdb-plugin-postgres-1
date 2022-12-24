@@ -9,7 +9,7 @@ use {
     log::*,
     postgres::{Client, Statement},
     solana_geyser_plugin_interface::geyser_plugin_interface::{
-        GeyserPluginError, ReplicaBlockInfo,
+        GeyserPluginError, ReplicaBlockInfoV2,
     },
 };
 
@@ -20,10 +20,11 @@ pub struct DbBlockInfo {
     pub rewards: Vec<DbReward>,
     pub block_time: Option<i64>,
     pub block_height: Option<i64>,
+    pub executed_transaction_count: i64,
 }
 
-impl<'a> From<&ReplicaBlockInfo<'a>> for DbBlockInfo {
-    fn from(block_info: &ReplicaBlockInfo) -> Self {
+impl<'a> From<&ReplicaBlockInfoV2<'a>> for DbBlockInfo {
+    fn from(block_info: &ReplicaBlockInfoV2) -> Self {
         Self {
             slot: block_info.slot as i64,
             blockhash: block_info.blockhash.to_string(),
@@ -32,6 +33,7 @@ impl<'a> From<&ReplicaBlockInfo<'a>> for DbBlockInfo {
             block_height: block_info
                 .block_height
                 .map(|block_height| block_height as i64),
+            executed_transaction_count: block_info.executed_transaction_count as i64,
         }
     }
 }
@@ -42,10 +44,11 @@ impl SimplePostgresClient {
         config: &GeyserPluginPostgresConfig,
     ) -> Result<Statement, GeyserPluginError> {
         let stmt =
-            "INSERT INTO block (slot, blockhash, rewards, block_time, block_height, updated_on) \
-        VALUES ($1, $2, $3, $4, $5, $6) \
+            "INSERT INTO block (slot, blockhash, rewards, block_time, block_height, executed_transaction_count, updated_on) \
+        VALUES ($1, $2, $3, $4, $5, $6, $7) \
         ON CONFLICT (slot) DO UPDATE SET blockhash=excluded.blockhash, rewards=excluded.rewards, \
-        block_time=excluded.block_time, block_height=excluded.block_height, updated_on=excluded.updated_on";
+        block_time=excluded.block_time, block_height=excluded.block_height, \
+        executed_transaction_count=excluded.executed_transaction_count, updated_on=excluded.updated_on";
 
         let stmt = client.prepare(stmt);
 
@@ -80,6 +83,7 @@ impl SimplePostgresClient {
                 &block_info.rewards,
                 &block_info.block_time,
                 &block_info.block_height,
+                &block_info.executed_transaction_count,
                 &updated_on,
             ],
         );

@@ -178,6 +178,7 @@ CREATE TABLE block (
     rewards "Reward"[],
     block_time BIGINT,
     block_height BIGINT,
+    executed_transaction_count BIGINT,
     updated_on TIMESTAMP NOT NULL
 );
 

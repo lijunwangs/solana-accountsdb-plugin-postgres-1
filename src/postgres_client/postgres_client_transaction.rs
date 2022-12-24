@@ -17,12 +17,12 @@ use {
         instruction::CompiledInstruction,
         message::{
             v0::{self, LoadedAddresses, MessageAddressTableLookup},
-            Message, MessageHeader, SanitizedMessage,
+            LegacyMessage, MessageHeader, SanitizedMessage,
         },
         transaction::TransactionError,
     },
     solana_transaction_status::{
-        InnerInstructions, Reward, TransactionStatusMeta, TransactionTokenBalance,
+        InnerInstruction, InnerInstructions, Reward, TransactionStatusMeta, TransactionTokenBalance,
     },
     std::sync::atomic::Ordering,
 };
@@ -39,9 +39,16 @@ pub struct DbCompiledInstruction {
 
 #[derive(Clone, Debug, FromSql, ToSql)]
 #[postgres(name = "InnerInstructions")]
+pub struct DbInnerInstruction {
+    pub instruction: DbCompiledInstruction,
+    pub stack_height: Option<i32>,
+}
+
+#[derive(Clone, Debug, FromSql, ToSql)]
+#[postgres(name = "InnerInstructions")]
 pub struct DbInnerInstructions {
     pub index: i16,
-    pub instructions: Vec<DbCompiledInstruction>,
+    pub instructions: Vec<DbInnerInstruction>,
 }
 
 #[derive(Clone, Debug, FromSql, ToSql)]
@@ -215,8 +222,18 @@ impl From<&CompiledInstruction> for DbCompiledInstruction {
     }
 }
 
-impl From<&Message> for DbTransactionMessage {
-    fn from(message: &Message) -> Self {
+impl From<&InnerInstruction> for DbInnerInstruction {
+    fn from(instruction: &InnerInstruction) -> Self {
+        Self {
+            instruction: DbCompiledInstruction::from(&instruction.instruction),
+            stack_height: instruction.stack_height.map(|height| height as i32),
+        }
+    }
+}
+
+impl<'a> From<&LegacyMessage<'a>> for DbTransactionMessage {
+    fn from(message: &LegacyMessage<'a>) -> Self {
+        let message = &message.message;
         Self {
             header: DbTransactionMessageHeader::from(&message.header),
             account_keys: message
@@ -276,7 +293,7 @@ impl From<&InnerInstructions> for DbInnerInstructions {
             instructions: instructions
                 .instructions
                 .iter()
-                .map(DbCompiledInstruction::from)
+                .map(DbInnerInstruction::from)
                 .collect(),
         }
     }
@@ -348,6 +365,8 @@ pub enum DbTransactionErrorCode {
     WouldExceedAccountDataTotalLimit,
     DuplicateInstruction,
     InsufficientFundsForRent,
+    MaxLoadedAccountsDataSizeExceeded,
+    InvalidLoadedAccountsDataSizeLimit,
 }
 
 impl From<&TransactionError> for DbTransactionErrorCode {
@@ -396,6 +415,12 @@ impl From<&TransactionError> for DbTransactionErrorCode {
             TransactionError::DuplicateInstruction(_) => Self::DuplicateInstruction,
             TransactionError::InsufficientFundsForRent { account_index: _ } => {
                 Self::InsufficientFundsForRent
+            }
+            TransactionError::InvalidLoadedAccountsDataSizeLimit => {
+                Self::InvalidLoadedAccountsDataSizeLimit
+            }
+            TransactionError::MaxLoadedAccountsDataSizeExceeded => {
+                Self::MaxLoadedAccountsDataSizeExceeded
             }
         }
     }

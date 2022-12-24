@@ -102,6 +102,9 @@ pub enum GeyserPluginPostgresError {
 
     #[error("Replica account V0.0.1 not supported anymore")]
     ReplicaAccountV001NotSupported,
+
+    #[error("Block info V0.0.1 not supported anymore")]
+    ReplicaBlockInfoV001NotSupported,
 }
 
 impl GeyserPlugin for GeyserPluginPostgres {
@@ -414,7 +417,7 @@ impl GeyserPlugin for GeyserPluginPostgres {
                 )));
             }
             Some(client) => match block_info {
-                ReplicaBlockInfoVersions::V0_0_1(block_info) => {
+                ReplicaBlockInfoVersions::V0_0_2(block_info) => {
                     let result = client.update_block_metadata(block_info);
 
                     if let Err(err) = result {
@@ -422,6 +425,11 @@ impl GeyserPlugin for GeyserPluginPostgres {
                                 msg: format!("Failed to persist the update of block metadata to the PostgreSQL database. Error: {:?}", err)
                             });
                     }
+                }
+                _ => {
+                    return Err(GeyserPluginError::Custom(Box::new(
+                        GeyserPluginPostgresError::ReplicaBlockInfoV001NotSupported,
+                    )));
                 }
             },
         }
