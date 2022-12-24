@@ -670,7 +670,7 @@ pub(crate) mod tests {
         solana_account_decoder::parse_token::UiTokenAmount,
         solana_sdk::{
             hash::Hash,
-            message::VersionedMessage,
+            message::{Message, VersionedMessage},
             pubkey::Pubkey,
             signature::{Keypair, Signature, Signer},
             system_transaction,
@@ -735,8 +735,8 @@ pub(crate) mod tests {
 
         for i in 0..inner_instructions.instructions.len() {
             check_compiled_instruction_equality(
-                &inner_instructions.instructions[i],
-                &db_inner_instructions.instructions[i],
+                &inner_instructions.instructions[i].instruction,
+                &db_inner_instructions.instructions[i].instruction,
             )
         }
     }
@@ -746,15 +746,21 @@ pub(crate) mod tests {
         let inner_instructions = InnerInstructions {
             index: 0,
             instructions: vec![
-                CompiledInstruction {
-                    program_id_index: 0,
-                    accounts: vec![1, 2, 3],
-                    data: vec![4, 5, 6],
+                InnerInstruction {
+                    instruction: CompiledInstruction {
+                        program_id_index: 0,
+                        accounts: vec![1, 2, 3],
+                        data: vec![4, 5, 6],
+                    },
+                    stack_height: None,
                 },
-                CompiledInstruction {
-                    program_id_index: 1,
-                    accounts: vec![12, 13, 14],
-                    data: vec![24, 25, 26],
+                InnerInstruction {
+                    instruction: CompiledInstruction {
+                        program_id_index: 1,
+                        accounts: vec![12, 13, 14],
+                        data: vec![24, 25, 26],
+                    },
+                    stack_height: None,
                 },
             ],
         };
@@ -1021,15 +1027,21 @@ pub(crate) mod tests {
             inner_instructions: Some(vec![InnerInstructions {
                 index: 0,
                 instructions: vec![
-                    CompiledInstruction {
-                        program_id_index: 0,
-                        accounts: vec![1, 2, 3],
-                        data: vec![4, 5, 6],
+                    InnerInstruction {
+                        instruction: CompiledInstruction {
+                            program_id_index: 0,
+                            accounts: vec![1, 2, 3],
+                            data: vec![4, 5, 6],
+                        },
+                        stack_height: None,
                     },
-                    CompiledInstruction {
-                        program_id_index: 1,
-                        accounts: vec![12, 13, 14],
-                        data: vec![24, 25, 26],
+                    InnerInstruction {
+                        instruction: CompiledInstruction {
+                            program_id_index: 1,
+                            accounts: vec![12, 13, 14],
+                            data: vec![24, 25, 26],
+                        },
+                        stack_height: None,
                     },
                 ],
             }]),
@@ -1148,7 +1160,11 @@ pub(crate) mod tests {
         check_message_header_equality(&message_header, &db_message_header)
     }
 
-    fn check_transaction_message_equality(message: &Message, db_message: &DbTransactionMessage) {
+    fn check_transaction_message_equality(
+        message: &LegacyMessage,
+        db_message: &DbTransactionMessage,
+    ) {
+        let message = &message.message;
         check_message_header_equality(&message.header, &db_message.header);
         assert_eq!(message.account_keys.len(), db_message.account_keys.len());
         for i in 0..message.account_keys.len() {
@@ -1163,8 +1179,8 @@ pub(crate) mod tests {
         }
     }
 
-    fn build_message() -> Message {
-        Message {
+    fn build_message<'a>() -> LegacyMessage<'a> {
+        let message = Message {
             header: MessageHeader {
                 num_readonly_signed_accounts: 11,
                 num_readonly_unsigned_accounts: 12,
@@ -1184,7 +1200,9 @@ pub(crate) mod tests {
                     data: vec![14, 15, 16],
                 },
             ],
-        }
+        };
+
+        LegacyMessage::new(message)
     }
 
     #[test]
