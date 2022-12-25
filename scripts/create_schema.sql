@@ -82,7 +82,7 @@ CREATE TYPE "CompiledInstruction" AS (
 
 CREATE TYPE "InnerInstruction" AS (
     instruction "CompiledInstruction",
-    stack_height INT
+    stack_height SMALLINT
 );
 
 CREATE TYPE "InnerInstructions" AS (

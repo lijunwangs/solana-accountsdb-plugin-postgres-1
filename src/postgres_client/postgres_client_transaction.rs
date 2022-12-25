@@ -41,7 +41,7 @@ pub struct DbCompiledInstruction {
 #[postgres(name = "InnerInstruction")]
 pub struct DbInnerInstruction {
     pub instruction: DbCompiledInstruction,
-    pub stack_height: Option<i32>,
+    pub stack_height: Option<i16>,
 }
 
 #[derive(Clone, Debug, FromSql, ToSql)]
@@ -226,7 +226,7 @@ impl From<&InnerInstruction> for DbInnerInstruction {
     fn from(instruction: &InnerInstruction) -> Self {
         Self {
             instruction: DbCompiledInstruction::from(&instruction.instruction),
-            stack_height: instruction.stack_height.map(|height| height as i32),
+            stack_height: instruction.stack_height.map(|height| height as i16),
         }
     }
 }
