@@ -25,13 +25,17 @@ postgres-openssl = { version = "0.5.0"}
 serde = "1.0.145"
 serde_derive = "1.0.145"
 serde_json = "1.0.85"
-solana-geyser-plugin-interface = { version = "=1.17.2" }
-solana-logger = { version = "1.17.2" }
-solana-measure = { version = "1.17.2" }
-solana-metrics = { version = "1.17.2" }
-solana-runtime = { version = "1.17.2" }
-solana-sdk = { version = "1.17.2" }
-solana-transaction-status = { version = "1.17.2" }
+solana-account-decoder = { path = "/Users/lijunwang/sol2/solana3/account-decoder", version = "=1.17.2" }
+solana-client = { path = "/Users/lijunwang/sol2/solana3/client", version = "=1.17.2" }
+solana-geyser-plugin-interface = { path = "/Users/lijunwang/sol2/solana3/geyser-plugin-interface", version = "=1.17.2" }
+solana-geyser-plugin-manager = { path = "/Users/lijunwang/sol2/solana3/geyser-plugin-manager", version = "=1.17.2" }
+solana-program = { path = "/Users/lijunwang/sol2/solana3/sdk/program", version = "=1.17.2" }
+solana-logger = {  path = "/Users/lijunwang/sol2/solana3/logger", version = "=1.17.2"  }
+solana-measure = {  path = "/Users/lijunwang/sol2/solana3/measure", version = "=1.17.2"  }
+solana-metrics = { path = "/Users/lijunwang/sol2/solana3/metrics", version = "=1.17.2" }
+solana-runtime = { path = "/Users/lijunwang/sol2/solana3/runtime", version = "=1.17.2" }
+solana-sdk = { path = "/Users/lijunwang/sol2/solana3/sdk", version = "=1.17.2" }
+solana-transaction-status = { path = "/Users/lijunwang/sol2/solana3/transaction-status", version = "=1.17.2" }
 thiserror = "1.0.37"
 tokio-postgres = "0.7.7"
 
@@ -41,7 +45,6 @@ libloading = "0.7.3"
 serial_test = "0.9.0"
 socket2 = { version = "0.4.7", features = ["all"] }
 
-solana-account-decoder = { version = "1.17.2" }
 solana-core = { version = "1.17.2" }
 solana-local-cluster = { version = "1.17.2" }
 solana-net-utils = { version = "1.17.2" }
@@ -50,3 +53,34 @@ tempfile = "3.3.0"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
+
+
+[patch.crates-io]
+# for details, see https://github.com/solana-labs/crossbeam/commit/fd279d707025f0e60951e429bf778b4813d1b6bf
+crossbeam-epoch = { git = "https://github.com/solana-labs/crossbeam", rev = "fd279d707025f0e60951e429bf778b4813d1b6bf" }
+
+# We include the following crates as our dependencies above from crates.io:
+#
+#  * spl-associated-token-account
+#  * spl-instruction-padding
+#  * spl-memo
+#  * spl-pod
+#  * spl-token
+#  * spl-token-2022
+#  * spl-token-metadata-interface
+#
+# They, in turn, depend on a number of crates that we also include directly using `path`
+# specifications.  For example, `spl-token` depends on `solana-program`.  And we explicitly specify
+# `solana-program` above as a local path dependency:
+#
+#     solana-program = { path = "../../sdk/program", version = "=1.16.0" }
+#
+# Unfortunately, Cargo will try to resolve the `spl-token` `solana-program` dependency only using
+# what is available on crates.io.  Crates.io normally contains a previous version of these crates,
+# and we end up with two versions of `solana-program` and `solana-zk-token-sdk` and all of their
+# dependencies in our build tree.
+#
+# There is a similar override in `programs/sbf/Cargo.toml`.  Please keep both comments and the
+# overrides in sync.
+solana-program = { path = "/Users/lijunwang/sol2/solana3/sdk/program" }
+solana-zk-token-sdk = { path = "/Users/lijunwang/sol2/solana3/zk-token-sdk" }
