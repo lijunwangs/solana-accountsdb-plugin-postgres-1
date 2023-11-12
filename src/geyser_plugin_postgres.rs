@@ -2,10 +2,6 @@
 
 /// Main entry for the PostgreSQL plugin
 use {
-    crate::{
-        accounts_selector::AccountsSelector,
-        transaction_selector::TransactionSelector,
-    },
     bs58,
     log::*,
     serde_derive::{Deserialize, Serialize},
@@ -22,8 +18,6 @@ use {
 
 #[derive(Default)]
 pub struct GeyserPluginPostgres {
-    accounts_selector: Option<AccountsSelector>,
-    transaction_selector: Option<TransactionSelector>,
 }
 
 impl std::fmt::Debug for GeyserPluginPostgres {
@@ -223,16 +217,12 @@ impl GeyserPlugin for GeyserPluginPostgres {
     /// Default is true -- if the plugin is not interested in
     /// account data, please return false.
     fn account_data_notifications_enabled(&self) -> bool {
-        self.accounts_selector
-            .as_ref()
-            .map_or_else(|| false, |selector| selector.is_enabled())
+        true
     }
 
     /// Check if the plugin is interested in transaction data
     fn transaction_notifications_enabled(&self) -> bool {
-        self.transaction_selector
-            .as_ref()
-            .map_or_else(|| false, |selector| selector.is_enabled())
+        true
     }
 }
 
