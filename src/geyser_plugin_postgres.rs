@@ -17,8 +17,7 @@ use {
 };
 
 #[derive(Default)]
-pub struct GeyserPluginPostgres {
-}
+pub struct GeyserPluginPostgres {}
 
 impl std::fmt::Debug for GeyserPluginPostgres {
     fn fmt(&self, _: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -161,16 +160,16 @@ impl GeyserPlugin for GeyserPluginPostgres {
     ///    }
     /// }
 
-    // fn on_load(&mut self, config_file: &str) -> Result<()> {
-    //     solana_logger::setup_with_default("info");
-    //     info!(
-    //         "Loading plugin {:?} from config_file {:?}",
-    //         self.name(),
-    //         config_file
-    //     );
+    fn on_load(&mut self, config_file: &str) -> Result<()> {
+        //solana_logger::setup_with_default("info");
+        info!(
+            "Loading plugin {:?} from config_file {:?}",
+            self.name(),
+            config_file
+        );
 
-    //     Ok(())
-    // }
+        Ok(())
+    }
 
     fn on_unload(&mut self) {
         info!("Unloading plugin new: {:?}", self.name());
