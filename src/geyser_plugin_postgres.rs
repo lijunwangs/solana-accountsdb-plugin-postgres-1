@@ -4,7 +4,6 @@
 use {
     crate::{
         accounts_selector::AccountsSelector,
-        postgres_client::{ParallelPostgresClient, PostgresClientBuilder},
         transaction_selector::TransactionSelector,
     },
     bs58,
