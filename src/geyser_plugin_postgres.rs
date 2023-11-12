@@ -218,6 +218,8 @@ impl GeyserPlugin for GeyserPluginPostgres {
         slot: u64,
         is_startup: bool,
     ) -> Result<()> {
+        return Ok(());
+
         // skip updating account on startup of batch_optimize_by_skiping_older_slots
         // is configured
         if is_startup
@@ -313,6 +315,7 @@ impl GeyserPlugin for GeyserPluginPostgres {
 
     fn update_slot_status(&self, slot: u64, parent: Option<u64>, status: SlotStatus) -> Result<()> {
         info!("Updating slot {:?} at with status {:?}", slot, status);
+        return Ok(());
 
         match &self.client {
             None => {
@@ -338,6 +341,8 @@ impl GeyserPlugin for GeyserPluginPostgres {
 
     fn notify_end_of_startup(&self) -> Result<()> {
         info!("Notifying the end of startup for accounts notifications");
+        return Ok(());
+
         match &self.client {
             None => {
                 return Err(GeyserPluginError::Custom(Box::new(
@@ -364,6 +369,8 @@ impl GeyserPlugin for GeyserPluginPostgres {
         transaction_info: ReplicaTransactionInfoVersions,
         slot: u64,
     ) -> Result<()> {
+        return Ok(());
+
         match &self.client {
             None => {
                 return Err(GeyserPluginError::Custom(Box::new(
@@ -405,6 +412,8 @@ impl GeyserPlugin for GeyserPluginPostgres {
     }
 
     fn notify_block_metadata(&self, block_info: ReplicaBlockInfoVersions) -> Result<()> {
+        return Ok(());
+
         match &self.client {
             None => {
                 return Err(GeyserPluginError::Custom(Box::new(
