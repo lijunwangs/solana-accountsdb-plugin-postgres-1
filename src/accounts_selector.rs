@@ -1,7 +1,7 @@
 use {log::*, std::collections::HashSet};
 
 #[derive(Debug)]
-pub(crate) struct AccountsSelector {
+pub struct AccountsSelector {
     pub accounts: HashSet<Vec<u8>>,
     pub owners: HashSet<Vec<u8>>,
     pub select_all_accounts: bool,
