@@ -204,7 +204,7 @@ impl GeyserPlugin for GeyserPluginPostgres {
     }
 
     fn on_unload(&mut self) {
-        info!("Unloading plugin: {:?}", self.name());
+        info!("Unloading plugin new: {:?}", self.name());
 
         // match &mut self.client {
         //     None => {}
