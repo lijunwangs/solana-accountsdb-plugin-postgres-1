@@ -212,10 +212,12 @@ impl GeyserPlugin for GeyserPluginPostgres {
     fn on_unload(&mut self) {
         info!("Unloading plugin: {:?}", self.name());
 
-        match &mut self.client {
+        let client = self.client.take();
+        match client {
             None => {}
-            Some(client) => {
+            Some(mut client) => {
                 client.join().unwrap();
+                drop(client);
             }
         }
     }
