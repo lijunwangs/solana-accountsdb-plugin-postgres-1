@@ -1083,7 +1083,7 @@ impl ParallelPostgresClient {
         let startup_done_count = Arc::new(AtomicUsize::new(0));
         let worker_count = config.threads.unwrap_or(DEFAULT_THREADS_COUNT);
         let initialized_worker_count = Arc::new(AtomicUsize::new(0));
-        for i in 0..1 {
+        for i in 0..worker_count {
             let cloned_receiver = receiver.clone();
             let exit_clone = exit_worker.clone();
             let is_startup_done_clone = is_startup_done.clone();
@@ -1235,18 +1235,18 @@ impl ParallelPostgresClient {
         &self,
         block_info: &ReplicaBlockInfoV3,
     ) -> Result<(), GeyserPluginError> {
-        if let Err(err) = self.sender.send(DbWorkItem::UpdateBlockMetadata(Box::new(
-            UpdateBlockMetadataRequest {
-                block_info: DbBlockInfo::from(block_info),
-            },
-        ))) {
-            return Err(GeyserPluginError::SlotStatusUpdateError {
-                msg: format!(
-                    "Failed to update the block metadata at slot {:?}, error: {:?}",
-                    block_info.slot, err
-                ),
-            });
-        }
+        // if let Err(err) = self.sender.send(DbWorkItem::UpdateBlockMetadata(Box::new(
+        //     UpdateBlockMetadataRequest {
+        //         block_info: DbBlockInfo::from(block_info),
+        //     },
+        // ))) {
+        //     return Err(GeyserPluginError::SlotStatusUpdateError {
+        //         msg: format!(
+        //             "Failed to update the block metadata at slot {:?}, error: {:?}",
+        //             block_info.slot, err
+        //         ),
+        //     });
+        // }
         Ok(())
     }
 
