@@ -994,15 +994,15 @@ impl PostgresClientWorker {
             match work {
                 Ok(work) => match work {
                     DbWorkItem::UpdateAccount(request) => {
-                        if let Err(err) = self
-                            .client
-                            .update_account(request.account, request.is_startup)
-                        {
-                            error!("Failed to update account: ({})", err);
-                            if panic_on_db_errors {
-                                abort();
-                            }
-                        }
+                        // if let Err(err) = self
+                        //     .client
+                        //     .update_account(request.account, request.is_startup)
+                        // {
+                        //     error!("Failed to update account: ({})", err);
+                        //     if panic_on_db_errors {
+                        //         abort();
+                        //     }
+                        // }
                     }
                     DbWorkItem::UpdateSlot(request) => {
                         if let Err(err) = self.client.update_slot_status(
@@ -1189,15 +1189,15 @@ impl ParallelPostgresClient {
 
         let mut measure = Measure::start("geyser-plugin-posgres-send-msg");
 
-        // if let Err(err) = self.sender.send(wrk_item) {
-        //     return Err(GeyserPluginError::AccountsUpdateError {
-        //         msg: format!(
-        //             "Failed to update the account {:?}, error: {:?}",
-        //             bs58::encode(account.pubkey()).into_string(),
-        //             err
-        //         ),
-        //     });
-        // }
+        if let Err(err) = self.sender.send(wrk_item) {
+            return Err(GeyserPluginError::AccountsUpdateError {
+                msg: format!(
+                    "Failed to update the account {:?}, error: {:?}",
+                    bs58::encode(account.pubkey()).into_string(),
+                    err
+                ),
+            });
+        }
 
         measure.stop();
         inc_new_counter_debug!(
