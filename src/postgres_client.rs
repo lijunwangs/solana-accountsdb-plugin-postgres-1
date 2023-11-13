@@ -1275,6 +1275,12 @@ impl ParallelPostgresClient {
     }
 }
 
+impl Drop for ParallelPostgresClient {
+    fn drop(&mut self) {
+        info!("Dropping ParallelPostgresClient");
+    }
+}
+
 pub struct PostgresClientBuilder {}
 
 impl PostgresClientBuilder {
