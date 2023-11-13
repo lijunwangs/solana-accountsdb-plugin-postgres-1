@@ -423,13 +423,13 @@ impl GeyserPlugin for GeyserPluginPostgres {
             }
             Some(client) => match block_info {
                 ReplicaBlockInfoVersions::V0_0_3(block_info) => {
-                    let result = client.update_block_metadata(block_info);
+                    // let result = client.update_block_metadata(block_info);
 
-                    if let Err(err) = result {
-                        return Err(GeyserPluginError::SlotStatusUpdateError{
-                                msg: format!("Failed to persist the update of block metadata to the PostgreSQL database. Error: {:?}", err)
-                            });
-                    }
+                    // if let Err(err) = result {
+                    //     return Err(GeyserPluginError::SlotStatusUpdateError{
+                    //             msg: format!("Failed to persist the update of block metadata to the PostgreSQL database. Error: {:?}", err)
+                    //         });
+                    // }
                 }
                 ReplicaBlockInfoVersions::V0_0_2(_block_info) => {
                     return Err(GeyserPluginError::SlotStatusUpdateError{
