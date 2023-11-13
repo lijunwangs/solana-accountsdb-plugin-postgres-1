@@ -991,72 +991,72 @@ impl PostgresClientWorker {
                 100000,
                 100000
             );
-        //     match work {
-        //         Ok(work) => match work {
-        //             DbWorkItem::UpdateAccount(request) => {
-        //                 if let Err(err) = self
-        //                     .client
-        //                     .update_account(request.account, request.is_startup)
-        //                 {
-        //                     error!("Failed to update account: ({})", err);
-        //                     if panic_on_db_errors {
-        //                         abort();
-        //                     }
-        //                 }
-        //             }
-        //             DbWorkItem::UpdateSlot(request) => {
-        //                 if let Err(err) = self.client.update_slot_status(
-        //                     request.slot,
-        //                     request.parent,
-        //                     request.slot_status,
-        //                 ) {
-        //                     error!("Failed to update slot: ({})", err);
-        //                     if panic_on_db_errors {
-        //                         abort();
-        //                     }
-        //                 }
-        //             }
-        //             DbWorkItem::LogTransaction(transaction_log_info) => {
-        //                 if let Err(err) = self.client.log_transaction(*transaction_log_info) {
-        //                     error!("Failed to update transaction: ({})", err);
-        //                     if panic_on_db_errors {
-        //                         abort();
-        //                     }
-        //                 }
-        //             }
-        //             DbWorkItem::UpdateBlockMetadata(block_info) => {
-        //                 if let Err(err) = self.client.update_block_metadata(*block_info) {
-        //                     error!("Failed to update block metadata: ({})", err);
-        //                     if panic_on_db_errors {
-        //                         abort();
-        //                     }
-        //                 }
-        //             }
-        //         },
-        //         Err(err) => match err {
-        //             RecvTimeoutError::Timeout => {
-        //                 if !self.is_startup_done && is_startup_done.load(Ordering::Relaxed) {
-        //                     if let Err(err) = self.client.notify_end_of_startup() {
-        //                         error!("Error in notifying end of startup: ({})", err);
-        //                         if panic_on_db_errors {
-        //                             abort();
-        //                         }
-        //                     }
-        //                     self.is_startup_done = true;
-        //                     startup_done_count.fetch_add(1, Ordering::Relaxed);
-        //                 }
+            match work {
+                Ok(work) => match work {
+                    DbWorkItem::UpdateAccount(request) => {
+                        if let Err(err) = self
+                            .client
+                            .update_account(request.account, request.is_startup)
+                        {
+                            error!("Failed to update account: ({})", err);
+                            if panic_on_db_errors {
+                                abort();
+                            }
+                        }
+                    }
+                    DbWorkItem::UpdateSlot(request) => {
+                        if let Err(err) = self.client.update_slot_status(
+                            request.slot,
+                            request.parent,
+                            request.slot_status,
+                        ) {
+                            error!("Failed to update slot: ({})", err);
+                            if panic_on_db_errors {
+                                abort();
+                            }
+                        }
+                    }
+                    DbWorkItem::LogTransaction(transaction_log_info) => {
+                        if let Err(err) = self.client.log_transaction(*transaction_log_info) {
+                            error!("Failed to update transaction: ({})", err);
+                            if panic_on_db_errors {
+                                abort();
+                            }
+                        }
+                    }
+                    DbWorkItem::UpdateBlockMetadata(block_info) => {
+                        if let Err(err) = self.client.update_block_metadata(*block_info) {
+                            error!("Failed to update block metadata: ({})", err);
+                            if panic_on_db_errors {
+                                abort();
+                            }
+                        }
+                    }
+                },
+                Err(err) => match err {
+                    RecvTimeoutError::Timeout => {
+                        if !self.is_startup_done && is_startup_done.load(Ordering::Relaxed) {
+                            if let Err(err) = self.client.notify_end_of_startup() {
+                                error!("Error in notifying end of startup: ({})", err);
+                                if panic_on_db_errors {
+                                    abort();
+                                }
+                            }
+                            self.is_startup_done = true;
+                            startup_done_count.fetch_add(1, Ordering::Relaxed);
+                        }
 
-        //                 continue;
-        //             }
-        //             _ => {
-        //                 error!("Error in receiving the item {:?}", err);
-        //                 if panic_on_db_errors {
-        //                     abort();
-        //                 }
-        //                 break;
-        //             }
-        //         },
-        //     }
+                        continue;
+                    }
+                    _ => {
+                        error!("Error in receiving the item {:?}", err);
+                        if panic_on_db_errors {
+                            abort();
+                        }
+                        break;
+                    }
+                },
+            }
         }
         info!("Quitting do_work");
         Ok(())
