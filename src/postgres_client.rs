@@ -1058,6 +1058,7 @@ impl PostgresClientWorker {
         //         },
         //     }
         }
+        info!("Quitting do_work");
         Ok(())
     }
 }
