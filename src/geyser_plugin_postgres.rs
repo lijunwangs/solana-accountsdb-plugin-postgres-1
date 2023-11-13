@@ -413,36 +413,36 @@ impl GeyserPlugin for GeyserPluginPostgres {
     }
 
     fn notify_block_metadata(&self, block_info: ReplicaBlockInfoVersions) -> Result<()> {
-        // match &self.client {
-        //     None => {
-        //         return Err(GeyserPluginError::Custom(Box::new(
-        //             GeyserPluginPostgresError::DataStoreConnectionError {
-        //                 msg: "There is no connection to the PostgreSQL database.".to_string(),
-        //             },
-        //         )));
-        //     }
-        //     Some(client) => match block_info {
-        //         ReplicaBlockInfoVersions::V0_0_3(block_info) => {
-        //             let result = client.update_block_metadata(block_info);
+        match &self.client {
+            None => {
+                return Err(GeyserPluginError::Custom(Box::new(
+                    GeyserPluginPostgresError::DataStoreConnectionError {
+                        msg: "There is no connection to the PostgreSQL database.".to_string(),
+                    },
+                )));
+            }
+            Some(client) => match block_info {
+                ReplicaBlockInfoVersions::V0_0_3(block_info) => {
+                    let result = client.update_block_metadata(block_info);
 
-        //             if let Err(err) = result {
-        //                 return Err(GeyserPluginError::SlotStatusUpdateError{
-        //                         msg: format!("Failed to persist the update of block metadata to the PostgreSQL database. Error: {:?}", err)
-        //                     });
-        //             }
-        //         }
-        //         ReplicaBlockInfoVersions::V0_0_2(_block_info) => {
-        //             return Err(GeyserPluginError::SlotStatusUpdateError{
-        //                 msg: "Failed to persist the transaction info to the PostgreSQL database. Unsupported format.".to_string()
-        //             });
-        //         }
-        //         ReplicaBlockInfoVersions::V0_0_1(_) => {
-        //             return Err(GeyserPluginError::SlotStatusUpdateError{
-        //                 msg: "Failed to persist the transaction info to the PostgreSQL database. Unsupported format.".to_string()
-        //             });
-        //         }
-        //     },
-        // }
+                    if let Err(err) = result {
+                        return Err(GeyserPluginError::SlotStatusUpdateError{
+                                msg: format!("Failed to persist the update of block metadata to the PostgreSQL database. Error: {:?}", err)
+                            });
+                    }
+                }
+                ReplicaBlockInfoVersions::V0_0_2(_block_info) => {
+                    return Err(GeyserPluginError::SlotStatusUpdateError{
+                        msg: "Failed to persist the transaction info to the PostgreSQL database. Unsupported format.".to_string()
+                    });
+                }
+                ReplicaBlockInfoVersions::V0_0_1(_) => {
+                    return Err(GeyserPluginError::SlotStatusUpdateError{
+                        msg: "Failed to persist the transaction info to the PostgreSQL database. Unsupported format.".to_string()
+                    });
+                }
+            },
+        }
 
         Ok(())
     }
