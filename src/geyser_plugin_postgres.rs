@@ -523,6 +523,12 @@ impl GeyserPluginPostgres {
     }
 }
 
+impl Drop for GeyserPluginPostgres {
+    fn drop(&mut self) {
+        info!("The GeyserPluginPostgres is dropped");
+    }
+}
+
 #[no_mangle]
 #[allow(improper_ctypes_definitions)]
 /// # Safety
