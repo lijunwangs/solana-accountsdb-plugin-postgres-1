@@ -1189,15 +1189,15 @@ impl ParallelPostgresClient {
 
         let mut measure = Measure::start("geyser-plugin-posgres-send-msg");
 
-        if let Err(err) = self.sender.send(wrk_item) {
-            return Err(GeyserPluginError::AccountsUpdateError {
-                msg: format!(
-                    "Failed to update the account {:?}, error: {:?}",
-                    bs58::encode(account.pubkey()).into_string(),
-                    err
-                ),
-            });
-        }
+        // if let Err(err) = self.sender.send(wrk_item) {
+        //     return Err(GeyserPluginError::AccountsUpdateError {
+        //         msg: format!(
+        //             "Failed to update the account {:?}, error: {:?}",
+        //             bs58::encode(account.pubkey()).into_string(),
+        //             err
+        //         ),
+        //     });
+        // }
 
         measure.stop();
         inc_new_counter_debug!(
@@ -1235,18 +1235,18 @@ impl ParallelPostgresClient {
         &self,
         block_info: &ReplicaBlockInfoV3,
     ) -> Result<(), GeyserPluginError> {
-        // if let Err(err) = self.sender.send(DbWorkItem::UpdateBlockMetadata(Box::new(
-        //     UpdateBlockMetadataRequest {
-        //         block_info: DbBlockInfo::from(block_info),
-        //     },
-        // ))) {
-        //     return Err(GeyserPluginError::SlotStatusUpdateError {
-        //         msg: format!(
-        //             "Failed to update the block metadata at slot {:?}, error: {:?}",
-        //             block_info.slot, err
-        //         ),
-        //     });
-        // }
+        if let Err(err) = self.sender.send(DbWorkItem::UpdateBlockMetadata(Box::new(
+            UpdateBlockMetadataRequest {
+                block_info: DbBlockInfo::from(block_info),
+            },
+        ))) {
+            return Err(GeyserPluginError::SlotStatusUpdateError {
+                msg: format!(
+                    "Failed to update the block metadata at slot {:?}, error: {:?}",
+                    block_info.slot, err
+                ),
+            });
+        }
         Ok(())
     }
 
