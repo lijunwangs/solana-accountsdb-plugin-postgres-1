@@ -1189,15 +1189,15 @@ impl ParallelPostgresClient {
 
         let mut measure = Measure::start("geyser-plugin-posgres-send-msg");
 
-        if let Err(err) = self.sender.send(wrk_item) {
-            return Err(GeyserPluginError::AccountsUpdateError {
-                msg: format!(
-                    "Failed to update the account {:?}, error: {:?}",
-                    bs58::encode(account.pubkey()).into_string(),
-                    err
-                ),
-            });
-        }
+        // if let Err(err) = self.sender.send(wrk_item) {
+        //     return Err(GeyserPluginError::AccountsUpdateError {
+        //         msg: format!(
+        //             "Failed to update the account {:?}, error: {:?}",
+        //             bs58::encode(account.pubkey()).into_string(),
+        //             err
+        //         ),
+        //     });
+        // }
 
         measure.stop();
         inc_new_counter_debug!(
