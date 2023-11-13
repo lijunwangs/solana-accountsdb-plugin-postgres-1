@@ -109,6 +109,14 @@ impl GeyserPlugin for GeyserPluginPostgres {
         "GeyserPluginPostgres"
     }
 
+    fn setup_logger(&self, logger: &'static dyn log::Log, level: log::LevelFilter) -> Result<()> {
+        log::set_max_level(level);
+        if let Err(err) = log::set_logger(logger) {
+            return Err(GeyserPluginError::Custom(Box::new(err)));
+        }
+        Ok(())
+    }
+
     /// Do initialization for the PostgreSQL plugin.
     ///
     /// # Format of the config file:

@@ -25,13 +25,14 @@ postgres-openssl = { version = "0.5.0"}
 serde = "1.0.145"
 serde_derive = "1.0.145"
 serde_json = "1.0.85"
-solana-geyser-plugin-interface = { version = "=1.17.2" }
-solana-logger = { version = "1.17.2" }
-solana-measure = { version = "1.17.2" }
-solana-metrics = { version = "1.17.2" }
-solana-runtime = { version = "1.17.2" }
-solana-sdk = { version = "1.17.2" }
-solana-transaction-status = { version = "1.17.2" }
+solana-geyser-plugin-interface =  {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-logger = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-measure = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-metrics = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-program = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-runtime = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-sdk = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-transaction-status = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
 thiserror = "1.0.37"
 tokio-postgres = "0.7.7"
 
@@ -50,3 +51,8 @@ tempfile = "3.3.0"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
+
+[patch.crates-io]
+
+solana-program = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
+solana-zk-token-sdk = {git = "https://github.com/lijunwangs/solana.git", rev = "b70866bb9b04d74dd4dacc18d243846cced874f7"}
