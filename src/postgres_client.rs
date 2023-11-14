@@ -11,7 +11,7 @@ use {
         postgres_client::postgres_client_account_index::TokenSecondaryIndexEntry,
     },
     chrono::Utc,
-    crossbeam_channel::{bounded, unbounded, Receiver, RecvTimeoutError, Sender},
+    crossbeam_channel::{bounded, Receiver, RecvTimeoutError, Sender},
     log::*,
     openssl::ssl::{SslConnector, SslFiletype, SslMethod},
     postgres::{Client, NoTls, Statement},
@@ -1076,7 +1076,7 @@ pub struct ParallelPostgresClient {
 impl ParallelPostgresClient {
     pub fn new(config: &GeyserPluginPostgresConfig) -> Result<Self, GeyserPluginError> {
         info!("Creating ParallelPostgresClient...");
-        let (sender, receiver) =unbounded(); //bounded(MAX_ASYNC_REQUESTS);
+        let (sender, receiver) = bounded(MAX_ASYNC_REQUESTS);
         let exit_worker = Arc::new(AtomicBool::new(false));
         let mut workers = Vec::default();
         let is_startup_done = Arc::new(AtomicBool::new(false));
