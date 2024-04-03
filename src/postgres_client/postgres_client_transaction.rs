@@ -5,13 +5,13 @@ use {
         geyser_plugin_postgres::{GeyserPluginPostgresConfig, GeyserPluginPostgresError},
         postgres_client::{DbWorkItem, ParallelPostgresClient, SimplePostgresClient},
     },
+    agave_geyser_plugin_interface::geyser_plugin_interface::{
+        GeyserPluginError, ReplicaTransactionInfoV2,
+    },
     chrono::Utc,
     log::*,
     postgres::{Client, Statement},
     postgres_types::{FromSql, ToSql},
-    solana_geyser_plugin_interface::geyser_plugin_interface::{
-        GeyserPluginError, ReplicaTransactionInfoV2,
-    },
     solana_runtime::bank::RewardType,
     solana_sdk::{
         instruction::CompiledInstruction,
